@@ -45,28 +45,31 @@ export function SignUp() {
     });
   }, [password]);
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     setSuccessMessage();
     setGeneralError();
     setApiProgress(true);
 
     try {
-      axios.post("/api/v1/users"),
-        {
-          firstName,
-          lastName,
-          phone,
-          email,
-          password,
-          userRoleId: 3,
-        };
+      const response = await signUp({
+        firstName,
+        lastName,
+        phone,
+        email,
+        password,
+        userRoleId: 3,
+      });
       setSuccessMessage(response.data.message);
     } catch (axiosError) {
-      if (axiosError.response?.data && axiosError.response.data === 400) {
-        setErrors(axiosError.response.data.validationsErrors);
+      if (axiosError.response?.data) {
+        if (axiosError.response.data === 500) {
+          setErrors(axiosError.response.data.validationsErrors);
+        } else {
+          setGeneralError(axiosError.response.data.message);
+        }
       } else {
-        //setGeneralError(axiosError.response.data.message);
+        setGeneralError("genericError");
       }
     } finally {
       setApiProgress(false);

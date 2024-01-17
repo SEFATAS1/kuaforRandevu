@@ -29,8 +29,8 @@ export function UserList() {
           </thead>
           <tbody>
             {users.map((users) => (
-              <tr key={users.ID}>
-                <td>{users.ID}</td>
+              <tr key={users.id}>
+                <td>{users.id}</td>
                 <td>{users.firstName}</td>
                 <td>{users.lastName}</td>
                 <td>{users.phone}</td>

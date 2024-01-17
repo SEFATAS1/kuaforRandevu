@@ -39,4 +39,22 @@ public class UserController {
         return ResponseEntity.ok(userDtoList);
     }
 
+    @GetMapping("/api/v1/users/{Id}")
+    public ResponseEntity<UserDto> findWithId(@PathVariable("Id") Long userId){
+        UserDto userDto = userService.findWithId(userId);
+        return ResponseEntity.ok(userDto);
+    }
+
+    @PutMapping("/api/v1/users/{Id}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable("Id") Long userId, @RequestBody UserDto currentUserDto){
+        UserDto userDto = userService.updateUser(userId, currentUserDto);
+        return ResponseEntity.ok(userDto);
+    }
+
+    @DeleteMapping("/api/v1/users/{Id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("Id") Long userId){
+        userService.deleteUser(userId);
+        return ResponseEntity.ok("Kullanıcı başarıyla silindi.");
+    }
+
 }

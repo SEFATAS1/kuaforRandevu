@@ -3,6 +3,7 @@ package com.SefaTas.KuaforRandevu.Service.Impl;
 import com.SefaTas.KuaforRandevu.Dto.UserDto;
 import com.SefaTas.KuaforRandevu.Entity.User;
 import com.SefaTas.KuaforRandevu.Exception.NotUniqueEmailException;
+import com.SefaTas.KuaforRandevu.Exception.SourceNotFoundException;
 import com.SefaTas.KuaforRandevu.Mapper.UserMapper;
 import com.SefaTas.KuaforRandevu.Repository.UserRepository;
 import com.SefaTas.KuaforRandevu.Service.UserService;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Service("UserService")
+@Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -50,11 +51,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(Long userId, UserDto updatedUsers) {
-        return null;
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new SourceNotFoundException("Girilen id ile ilişkili bir kayıt bulunanmadı. Id: " + userId));
+
+        user.setFirstName(updatedUsers.getFirstName());
+        user.setLastName(updatedUsers.getLastName());
+        user.setPhone(updatedUsers.getPhone());
+        user.setEmail(updatedUsers.getEmail());
+        user.setPassword(updatedUsers.getPassword());
+        user.setUserRoleId(updatedUsers.getUserRoleId());
+
+        User updateUserInDatabase = userRepository.save(user);
+
+        return UserMapper.mapToUserDto(updateUserInDatabase);
     }
 
     @Override
     public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new SourceNotFoundException("Girilen id ile ilişkili bir kayıt bulunanmadı. Id: " + userId));
 
+        userRepository.deleteById(userId);
     }
 }
